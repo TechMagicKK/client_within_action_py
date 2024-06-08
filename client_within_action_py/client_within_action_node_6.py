@@ -34,29 +34,34 @@ class ClientWithinActionNode(Node):
         # Create a new goal
         new_goal_1 = Fibonacci.Goal()
         new_goal_1.order = goal.order
-        #new_goal_2 = Fibonacci.Goal()
-        #new_goal_2.order = goal.order
+        new_goal_2 = Fibonacci.Goal()
+        new_goal_2.order = goal.order
         # Send the goal to the fibonacci action server
+        feedback_1 = [None]
+        feedback_2 = [None]
         future_1 = self.action_client_1.send_goal_async(
-            new_goal_1, feedback_callback=self.client_feedback_callback)
-        #future_2 = self.action_client_2.send_goal_async(
-        #    new_goal_2, feedback_callback=self.client_feedback_callback)
-        while (not future_1.done()):
+            new_goal_1, feedback_callback=lambda feedback_msg: self.client_feedback_callback(feedback_msg, feedback_1))
+        future_2 = self.action_client_2.send_goal_async(
+            new_goal_2, feedback_callback=lambda feedback_msg: self.client_feedback_callback(feedback_msg, feedback_2))
+        while (not (future_1.done() and future_2.done())):
             time.sleep(0.1)
         client_goal_handle_1 = future_1.result()
-        #client_goal_handle_2 = future_2.result()
+        client_goal_handle_2 = future_2.result()
         # Wait for the result
         future_1 = client_goal_handle_1.get_result_async()
-        #future_2 = client_goal_handle_2.get_result_async()
-        while (not future_1.done()):
+        future_2 = client_goal_handle_2.get_result_async()
+        while (not (future_1.done() and future_2.done())):
+            if feedback_1[0] is not None:
+                goal_handle.publish_feedback(feedback_1[0])
             time.sleep(0.1)
         result = future_1.result().result
         goal_handle.succeed()
         return result
 
-    def client_feedback_callback(self, feedback_msg):
+    def client_feedback_callback(self, feedback_msg, feedback):
         self.get_logger().info(
             'Received feedback: {0}'.format(feedback_msg.feedback.partial_sequence))
+        feedback[0] = feedback_msg.feedback
 
 
 def main(args=None):

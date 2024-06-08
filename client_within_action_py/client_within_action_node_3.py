@@ -20,7 +20,6 @@ class ClientWithinActionNode(Node):
             callback_group=ReentrantCallbackGroup())
 
     def server_execute_callback(self, goal_handle):
-        objgraph.show_growth()
         # Get the goal
         goal = goal_handle.request
         # Create a new goal

@@ -18,8 +18,6 @@ class ClientWithinActionNode(Node):
             execute_callback=self.server_execute_callback,
             result_timeout=1)
     def server_execute_callback(self, goal_handle):
-        import objgraph
-        objgraph.show_growth()
         # Get the goal
         goal = goal_handle.request
         # Create a new goal
