@@ -20,6 +20,13 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
+            'client_within_action_1 = client_within_action_py.client_within_action_node_1:main',
+            'client_within_action_2 = client_within_action_py.client_within_action_node_2:main',
+            'client_within_action_3 = client_within_action_py.client_within_action_node_3:main',
+            'client_within_action_4 = client_within_action_py.client_within_action_node_4:main',
+            'client_within_action_5 = client_within_action_py.client_within_action_node_5:main',
+            'client_within_action_6 = client_within_action_py.client_within_action_node_6:main',
+            'periodic_action_client = client_within_action_py.periodic_action_client:main',
         ],
     },
 )
